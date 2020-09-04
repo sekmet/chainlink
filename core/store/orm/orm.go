@@ -1443,7 +1443,8 @@ func (orm *ORM) IncrFluxMonitorRoundSubmissions(aggregator common.Address, round
 
 func (orm *ORM) CreateOffchainReportingJobSpec(spec *offchainreporting.JobSpec) error {
 	orm.MustEnsureAdvisoryLock()
-	return orm.DB.Create(spec).Error
+	dbRow := spec.ForDB()
+	return orm.DB.Create(dbRow).Error
 }
 
 func (orm *ORM) FindOffchainReportingJobSpec(jobID models.ID) (offchainreporting.JobSpec, error) {
