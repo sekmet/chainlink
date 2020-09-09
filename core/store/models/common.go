@@ -617,3 +617,6 @@ func Merge(inputs ...JSON) (JSON, error) {
 
 	return JSON{Result: gjson.ParseBytes(bytes)}, nil
 }
+
+// Explicit type indicating a 32-byte sha256 hash
+type Sha256Hash [32]byte
