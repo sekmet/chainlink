@@ -11,7 +11,7 @@ import (
 
 type (
 	Spec struct {
-		ID           int64 `gorm:"primary_key"`
+		ID           int32 `gorm:"primary_key"`
 		JobSpecID    *models.ID
 		DotDagSource string
 		TaskSpecs    []TaskSpec
@@ -19,26 +19,26 @@ type (
 	}
 
 	TaskSpec struct {
-		ID          int64 `gorm:"primary_key"`
-		SpecID      int64
+		ID          int32 `gorm:"primary_key"`
+		SpecID      int32
 		TaskType    TaskType
-		TaskJson    JSONSerializable `gorm:"type:jsonb"`
+		TaskJson    JSONSerializable
 		SuccessorID null.Int64
 		CreatedAt   time.Time
 	}
 
 	Run struct {
 		ID        int64 `gorm:"primary_key"`
-		SpecID    int64
+		SpecID    int32
 		CreatedAt time.Time
 	}
 
 	TaskRun struct {
 		ID         int64 `gorm:"primary_key"`
 		RunID      int64
-		Output     *JSONSerializable `gorm:"type:jsonb"`
+		Output     *JSONSerializable
 		Error      null.String
-		TaskSpecID int64
+		TaskSpecID int32
 		TaskSpec   TaskSpec
 		CreatedAt  time.Time
 		FinishedAt time.Time

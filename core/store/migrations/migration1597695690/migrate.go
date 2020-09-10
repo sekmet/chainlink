@@ -27,7 +27,7 @@ func Migrate(tx *gorm.DB) error {
 	 		monitoring_endpoint TEXT,
 	 		transmitter_address bytea NOT NULL REFERENCES keys (address),
 	 		observation_timeout interval NOT NULL,
-			data_fetch_pipeline_spec_id BIGINT NOT NULL REFERENCES pipeline_specs (id),
+			data_fetch_pipeline_spec_id INT NOT NULL REFERENCES pipeline_specs (id),
 	 		created_at timestamptz NOT NULL,
 			updated_at timestamptz NOT NULL
 	 	);
@@ -40,9 +40,7 @@ func Migrate(tx *gorm.DB) error {
 		CREATE INDEX idx_offchainreporting_oracles_updated_at ON offchainreporting_oracles USING BRIN (updated_at);
 
 		CREATE TABLE pipeline_specs (
-			-- id is intended to be a sha256 hash of the json representation of the DOT dag
-			id BYTEA PRIMARY KEY,
-			CONSTRAINT chk_id_length CHECK (octet_length(id) = 32),
+			id SERIAL PRIMARY KEY,
 			source_dot_dag TEXT NOT NULL,
 			created_at timestamptz NOT NULL
 		);
@@ -50,12 +48,13 @@ func Migrate(tx *gorm.DB) error {
 		CREATE INDEX idx_pipeline_specs_created_at ON pipeline_specs USING BRIN (created_at);
 
 		CREATE TABLE pipeline_task_specs (
-			id BIGSERIAL PRIMARY KEY,
-			pipeline_spec_id BIGINT NOT NULL REFERENCES pipeline_specs (id),
+			id SERIAL PRIMARY KEY,
+			pipeline_spec_id INT NOT NULL REFERENCES pipeline_specs (id),
 
-			task jsonb NOT NULL,
+			task_type TEXT NOT NULL,
+			task_json jsonb NOT NULL,
 
-			successor_id BIGINT REFERENCES pipeline_task_specs (id),
+			successor_id INT REFERENCES pipeline_task_specs (id),
 
 			created_at timestamptz NOT NULL,
 		);
