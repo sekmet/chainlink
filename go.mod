@@ -28,6 +28,7 @@ require (
 	github.com/gin-gonic/gin v1.6.0
 	github.com/gobuffalo/packr v1.30.1
 	github.com/golang/mock v1.4.4 // indirect
+	github.com/golangci/golangci-lint v1.31.0
 	github.com/gorilla/securecookie v1.1.1
 	github.com/gorilla/sessions v1.2.0
 	github.com/gorilla/websocket v1.4.2
@@ -41,7 +42,6 @@ require (
 	github.com/mitchellh/mapstructure v1.1.2
 	github.com/olekukonko/tablewriter v0.0.4
 	github.com/onsi/gomega v1.10.1
-	github.com/pborman/uuid v0.0.0-20180906182336-adf5a7427709 // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.7.1
 	github.com/rjeczalik/notify v0.9.2 // indirect

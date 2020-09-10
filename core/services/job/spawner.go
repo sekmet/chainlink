@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/guregu/null.v4"
+	// "github.com/guregu/null.v4"
 	"github.com/pkg/errors"
 
 	"github.com/smartcontractkit/chainlink/core/logger"

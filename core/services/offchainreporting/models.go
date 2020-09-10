@@ -5,6 +5,7 @@ import (
 
 	"github.com/ethereum/go-ethereum/common"
 
+	uuid "github.com/satori/go.uuid"
 	"github.com/smartcontractkit/chainlink/core/services/job"
 	"github.com/smartcontractkit/chainlink/core/services/pipeline"
 	"github.com/smartcontractkit/chainlink/core/store/models"
@@ -13,6 +14,7 @@ import (
 type (
 	OracleSpec struct {
 		ID                 int32              `toml:"-" gorm:"primary_key"`
+		JobID              uuid.UUID          `toml:"jobID" gorm: "-"`
 		ContractAddress    common.Address     `toml:"contractAddress"`
 		P2PPeerID          string             `toml:"p2pPeerID"`
 		P2PBootstrapPeers  []P2PBootstrapPeer `toml:"p2pBootstrapPeers"`

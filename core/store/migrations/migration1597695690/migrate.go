@@ -15,10 +15,22 @@ func Migrate(tx *gorm.DB) error {
 	 		created_at timestamptz NOT NULL,
 	 	);
 
-		CREATE INDEX idx_offchainreporting_oracles_unique_key_bundles_created_at ON offchainreporting_key_bundles USING BRIN (created_at);
+		CREATE INDEX idx_offchainreporting_oracle_specs_unique_key_bundles_created_at ON offchainreporting_key_bundles USING BRIN (created_at);
 
-	 	CREATE TABLE offchainreporting_oracles (
+		-- NOTE: This will be extended with new IDs when we bring directrequest and fluxmonitor under the new jobspawner umbrella
+		-- Only ONE id should ever be present
+		CREATE TABLE jobs (
+			id SERIAL PRIMARY KEY,
+			offchainreporting_oracle_spec_id INT REFERENCES offchainreporting_oracle_specs (id),
+			CONSTRAINT chk_valid CHECK (
+				offchainreporting_oracle_spec_id IS NOT NULL
+			)
+		);
+		CREATE UNIQUE INDEX idx_jobs_unique_offchainreporting_oracle_spec_ids ON jobs (offchainreporting_oracle_spec_id);
+
+	 	CREATE TABLE offchainreporting_oracle_specs (
 	 		id SERIAL PRIMARY KEY,
+			job_id INT NOT NULL REFERENCES jobs (id),
 	 		contract_address bytea NOT NULL,
 	 		CONSTRAINT chk_contract_address_length CHECK (octet_length(contract_address) = 20),
 	 		p2p_peer_id text NOT NULL REFERENCES encrypted_p2p_keys (peer_id),
@@ -32,12 +44,13 @@ func Migrate(tx *gorm.DB) error {
 			updated_at timestamptz NOT NULL
 	 	);
 
-		CREATE UNIQUE INDEX idx_offchainreporting_oracles_unique_key_bundles ON offchainreporting_oracles (key_bundle_id, contract_address);
-		CREATE UNIQUE INDEX idx_offchainreporting_oracles_unique_peer_ids ON offchainreporting_oracles (p2p_peer_id, contract_address);
-		CREATE INDEX idx_offchainreporting_oracles_data_fetch_pipeline_spec_id ON offchainreporting_oracles (data_fetch_pipeline_spec_id);
+		CREATE UNIQUE INDEX idx_offchainreporting_oracle_specs_unique_key_bundles ON offchainreporting_oracle_specs (key_bundle_id, contract_address);
+		CREATE UNIQUE INDEX idx_offchainreporting_oracle_specs_unique_peer_ids ON offchainreporting_oracle_specs (p2p_peer_id, contract_address);
+		CREATE UNIQUE INDEX idx_offchainreporting_oracle_specs_unique_job_ids ON offchainreporting_oracle_specs (job_id);
+		CREATE INDEX idx_offchainreporting_oracle_specs_data_fetch_pipeline_spec_id ON offchainreporting_oracle_specs (data_fetch_pipeline_spec_id);
 		
-		CREATE INDEX idx_offchainreporting_oracles_created_at ON offchainreporting_oracles USING BRIN (created_at);
-		CREATE INDEX idx_offchainreporting_oracles_updated_at ON offchainreporting_oracles USING BRIN (updated_at);
+		CREATE INDEX idx_offchainreporting_oracle_specs_created_at ON offchainreporting_oracle_specs USING BRIN (created_at);
+		CREATE INDEX idx_offchainreporting_oracle_specs_updated_at ON offchainreporting_oracle_specs USING BRIN (updated_at);
 
 		CREATE TABLE pipeline_specs (
 			id SERIAL PRIMARY KEY,
